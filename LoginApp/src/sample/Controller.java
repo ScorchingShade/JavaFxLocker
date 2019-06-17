@@ -3,12 +3,15 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class Controller {
 
@@ -24,13 +27,36 @@ public class Controller {
     @FXML
     private javafx.scene.layout.AnchorPane pane;
 
-
     @FXML
     private void closeButtonAction(){
         // get a handle to the stage
-        Stage stage = (Stage) closeButton.getScene().getWindow();
-        // do what you have to do
-        stage.close();
+
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Close");
+        alert.setHeaderText(null);
+
+        ButtonType yes = new ButtonType("Yes");
+        ButtonType no = new ButtonType("No");
+
+        alert.setContentText("Are you sure you want to exit?");
+
+        alert.getButtonTypes().clear();
+        alert.getButtonTypes().addAll(yes,no);
+
+
+
+        Optional<ButtonType> option = alert.showAndWait();
+
+
+
+
+        if (option.get() == yes) {
+            //do stuff
+            Stage stage = (Stage) closeButton.getScene().getWindow();
+            // do what you have to do
+            stage.close();
+        }
     }
 
     @FXML
