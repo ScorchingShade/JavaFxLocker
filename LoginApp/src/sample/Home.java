@@ -7,12 +7,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -25,6 +28,16 @@ public class Home {
     private AnchorPane Hpane;
     @FXML
     private ImageView image;
+    @FXML
+    private javafx.scene.control.Button browse;
+    @FXML
+    private javafx.scene.control.TextField bro;
+    @FXML
+    public javafx.scene.control.Label info,info1;
+
+
+
+
 
 
     @FXML
@@ -99,6 +112,25 @@ public class Home {
 
 
     }
+
+    @FXML
+    private void Browse (ActionEvent event){
+        final DirectoryChooser directoryChooser=new DirectoryChooser();
+
+        Stage stage= (Stage) Hpane.getScene().getWindow();
+
+        File file =directoryChooser.showDialog(stage);
+
+        if(file!=null){
+            System.out.println("Path: "+file.getAbsolutePath());
+            bro.setText(file.getAbsolutePath());
+            info1.setText("Ready for Operation!");
+        }
+
+    }
+
+
+
 
 
 }

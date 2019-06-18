@@ -27,6 +27,8 @@ public class Controller {
     @FXML
     private javafx.scene.layout.AnchorPane pane;
 
+
+
     @FXML
     private void closeButtonAction(){
         // get a handle to the stage
