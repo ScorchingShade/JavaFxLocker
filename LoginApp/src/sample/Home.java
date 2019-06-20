@@ -12,7 +12,24 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import net.lingala.zip4j.exception.ZipException;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.FileOutputStream;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.spec.IvParameterSpec;
+import java.util.Base64;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -20,6 +37,12 @@ import java.util.Optional;
 public class Home {
     String source,zipPath = "";
     File file=null;
+    Cipher ci;
+    byte[] iv;
+    SecureRandom srandom;
+    SecretKey skey;
+    IvParameterSpec ivspec;
+
 
     @FXML
     private javafx.scene.control.Button closeButton;
@@ -119,6 +142,7 @@ public class Home {
             info1.setText("Ready for Operation!");
 
             this.source = file.getAbsolutePath();
+            System.out.println(source);
 
         }
 
@@ -126,22 +150,80 @@ public class Home {
 
     @FXML
     private void Encrypt(ActionEvent event) {
+
+
         Crypto c1 = new Crypto();
-        boolean z=false;
+
+        /**
+        boolean z= false;
+        try {
+            c1 = new Crypto();
+            z = false;
+
+           iv = new byte[128/8];
+           srandom=new SecureRandom();
+            srandom.nextBytes(iv);
+
+           ivspec = new IvParameterSpec(iv);
+
+            KeyGenerator kgen = KeyGenerator.getInstance("AES");
+            skey = kgen.generateKey();
+           ci = Cipher.getInstance("AES/CBC/PKCS5Padding");
+
+            ci.init(Cipher.ENCRYPT_MODE, skey, ivspec);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        }
 
         if (source.equals(null)) {
             info1.setText("Can't encrypt without a path");
         } else {
             zipPath = source + "zipper.zip";
+
             System.out.println(zipPath);
             try {
                 c1.pack(source, zipPath);
+                c1.encryptFile(ci,zipPath,zipPath);
+
+
                 z=c1.deleteDirectory(file);
                 info1.setText("Encrypted");
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+         */
+
+        boolean z=false;
+        if(source.equals(null)){
+            info1.setText("Can't encrypt without a source file!");
+        }
+        else {
+            try {
+                c1.encryptzi(source);
+                info1.setText("Encrypted");
+                z=c1.deleteDirectory(file);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ZipException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+
     }
 
     @FXML
@@ -149,19 +231,64 @@ public class Home {
         Crypto c1 = new Crypto();
         System.out.println(source);
         boolean z=true;
+
+
+
+/**
+
         if (zipPath.equals(null)) {
             info1.setText("Can't decrypt without a path");
         } else {
 
             try {
-                c1.unzip(zipPath,source);
-                file=new File(zipPath);
-                z=c1.deleteDirectory(file);
+                try {
+                    Cipher ci = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                    ci.init(Cipher.DECRYPT_MODE, skey, ivspec);
+                    c1.encryptFile(ci, zipPath, zipPath);
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (NoSuchPaddingException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (InvalidAlgorithmParameterException e) {
+                    e.printStackTrace();
+                } catch (IllegalBlockSizeException e) {
+                    e.printStackTrace();
+                } catch (BadPaddingException e) {
+                    e.printStackTrace();
+                }
+               // c1.unzip(zipPath,source);
+                //file=new File(zipPath);
+                //z=c1.deleteDirectory(file);
                 info1.setText("Decrypted");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+**/
+
+        System.out.println(source);
+
+        if(source.equals(null)){
+            info1.setText("Can't decrypt without a source file!");
+        }
+        else {
+            try {
+                c1.decryptzi(source+".zip");
+                info1.setText("Decrypted");
+                file=new File(source+".zip");
+                z=c1.deleteDirectory(file);
+
+            }
+             catch (ZipException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+
     }
 
 

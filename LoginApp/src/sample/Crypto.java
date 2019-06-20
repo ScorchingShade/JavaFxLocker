@@ -1,10 +1,18 @@
 package sample;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
 
+import java.io.*;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
+
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,15 +23,15 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.security.spec.KeySpec;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import java.util.ArrayList;
+import java.util.zip.*;
 
 public class Crypto {
     //doing cryptography
     //encrypting folder by zipping it
     //decrypting folder and unzipping it
 
+    /*
     public static void pack(String sourceDirPath, String zipFilePath) throws IOException {
         Path p = Files.createFile(Paths.get(zipFilePath));
         try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
@@ -79,7 +87,7 @@ public class Crypto {
         bos.close();
     }
 
-
+*/
     public static boolean deleteDirectory(File dir) {
         if (dir.isDirectory()) {
             File[] children = dir.listFiles();
@@ -95,54 +103,53 @@ public class Crypto {
     }
 
 
-    public void encrypsa(File inFile,File outFile, String password) throws IOException, IllegalBlockSizeException,BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidParameterSpecException,InvalidKeyException {
-        byte[] salt = new byte[8];
-        SecureRandom secureRandom = new SecureRandom();
-        secureRandom.nextBytes(salt);
-        FileOutputStream saltOutFile = new FileOutputStream("salt.enc");
-        saltOutFile.write(salt);
-        saltOutFile.close();
-
-        SecretKeyFactory factory = SecretKeyFactory
-                .getInstance("PBKDF2WithHmacSHA1");
-        KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, 65536,
-                256);
-        SecretKey secretKey = factory.generateSecret(keySpec);
-        SecretKey secret = new SecretKeySpec(secretKey.getEncoded(), "AES");
-
-        //
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, secret);
-        AlgorithmParameters params = cipher.getParameters();
-
-        // iv adds randomness to the text and just makes the mechanism more
-        // secure
-        // used while initializing the cipher
-        // file to store the iv
-        FileOutputStream ivOutFile = new FileOutputStream("iv.enc");
-        byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
-        ivOutFile.write(iv);
-        ivOutFile.close();
-
-        //file encryption
-        byte[] input = new byte[64];
-        int bytesRead;
-
-        Reader read=new InputStreamReader();
-        while ((bytesRead = inFile.inputStreamReader  read(input)) != -1) {
-            byte[] output = cipher.update(input, 0, bytesRead);
-            if (output != null)
-                outFile.write(output);
+    static public void encryptFile(Cipher ci,String inFile,String outFile)
+            throws javax.crypto.IllegalBlockSizeException,
+            javax.crypto.BadPaddingException,
+            java.io.IOException
+    {
+        try (FileInputStream in = new FileInputStream(inFile);
+             FileOutputStream out = new FileOutputStream(outFile)) {
+            byte[] ibuf = new byte[1024];
+            int len;
+            while ((len = in.read(ibuf)) != -1) {
+                byte[] obuf = ci.update(ibuf, 0, len);
+                if ( obuf != null ) out.write(obuf);
+            }
+            byte[] obuf = ci.doFinal();
+            if ( obuf != null ) out.write(obuf);
         }
-
-        byte[] output = cipher.doFinal();
-        if (output != null)
-            outFile.write(output);
-
-        inFile.close();
-        outFile.flush();
-        outFile.close();
-
-        System.out.println("File Encrypted.");
     }
+
+
+    public  void encryptzi(String sourcePath) throws IOException,ZipException {
+        String destPath = sourcePath + ".zip";
+        System.out.println("Destination " + destPath);
+        ZipFile zipFile = new ZipFile(destPath);
+        // Setting parameters
+        ZipParameters zipParameters = new ZipParameters();
+        zipParameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+        zipParameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_ULTRA);
+        zipParameters.setEncryptFiles(true);
+        zipParameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
+        zipParameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
+        // Setting password
+        zipParameters.setPassword("pass@123");
+        zipFile.addFolder(sourcePath, zipParameters);
+    }
+
+    public void decryptzi(String sourcePath) throws ZipException{
+        String destPath = sourcePath.replaceAll(".zip","");
+        System.out.println("Destination " + destPath);
+        ZipFile zipFile = new ZipFile(sourcePath);
+        // If it is encrypted then provide password
+        if(zipFile.isEncrypted()){
+            zipFile.setPassword("pass@123");
+        }
+        zipFile.extractAll(destPath);
+    }
+
+
+
+
 }
