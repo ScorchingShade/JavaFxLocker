@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.lingala.zip4j.exception.ZipException;
 
@@ -131,10 +132,12 @@ public class Home {
     @FXML
     private void Browse(ActionEvent event) {
         final DirectoryChooser directoryChooser = new DirectoryChooser();
+        final FileChooser fileChooser=new FileChooser();
 
         Stage stage = (Stage) Hpane.getScene().getWindow();
 
         this.file = directoryChooser.showDialog(stage);
+
 
         if (file != null) {
             System.out.println("Path: " + file.getAbsolutePath());
@@ -269,13 +272,14 @@ public class Home {
 **/
 
         System.out.println(source);
+        String DecryptP=bro.getText().toString()+".zip";
 
-        if(source.equals(null)){
-            info1.setText("Can't decrypt without a source file!");
+        if(bro==null){
+            info1.setText("Please choose from source!");
         }
         else {
             try {
-                c1.decryptzi(source+".zip");
+                c1.decryptzi(DecryptP);
                 info1.setText("Decrypted");
                 file=new File(source+".zip");
                 z=c1.deleteDirectory(file);
