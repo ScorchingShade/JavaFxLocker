@@ -60,4 +60,19 @@ public class DbControl {
     }
 
 
+    boolean check(String  Name, String Password) throws SQLException{
+        Connection conn= DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE","system","Newuser123");
+        conn=Connections(conn);
+        String sql="select * from tlogin where name= '"+Name+"' and password= '"+pass+"'";
+        PreparedStatement ps=conn.prepareStatement(sql);
+        ResultSet rs=ps.executeQuery();
+        if(rs.next()){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
 }

@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.ImageView;
@@ -36,7 +37,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class Home {
-    String source,zipPath = "";
+    String source="",zipPath = "";
     File file=null;
     Cipher ci;
     byte[] iv;
@@ -113,21 +114,21 @@ public class Home {
 
 
         if (option.get() == yes) {
-            image.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
+
                     try {
                         GridPane Hp1 = FXMLLoader.load(this.getClass().getResource("/sample/sample.fxml"));
+                        Scene scene =new Scene(Hp1);
+
                         Hpane.getChildren().setAll(Hp1);
                     } catch (IOException i) {
                         i.printStackTrace();
                     }
                 }
-            });
-        }
+            }
 
 
-    }
+
+
 
     @FXML
     private void Browse(ActionEvent event) {
@@ -208,7 +209,8 @@ public class Home {
          */
 
         boolean z=false;
-        if(source.equals(null)){
+
+        if(source.equals("")){
             info1.setText("Can't encrypt without a source file!");
         }
         else {
@@ -273,11 +275,11 @@ public class Home {
 
         System.out.println(source);
         String DecryptP=bro.getText().toString()+".zip";
-
-        if(bro==null){
+        System.out.println(DecryptP);
+        if(DecryptP.equals(".zip")){
             info1.setText("Please choose from source!");
         }
-        else {
+        else  {
             try {
                 c1.decryptzi(DecryptP);
                 info1.setText("Decrypted");

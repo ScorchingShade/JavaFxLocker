@@ -8,9 +8,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class Controller {
@@ -26,6 +30,15 @@ public class Controller {
 
     @FXML
     private javafx.scene.layout.AnchorPane pane;
+
+    @FXML
+    public javafx.scene.control.PasswordField pass;
+
+    @FXML
+    public javafx.scene.control.TextField name;
+
+    @FXML
+    public javafx.scene.control.Label lbl;
 
 
 
@@ -62,9 +75,19 @@ public class Controller {
     }
 
     @FXML
-   private void loginButtonAction(ActionEvent event) throws IOException{
-        AnchorPane pnlOne = FXMLLoader.load(this.getClass().getResource("/sample/Home.fxml"));
-        pane.getChildren().setAll(pnlOne);
+   private void loginButtonAction(ActionEvent event) throws IOException, SQLException {
+        DbControl dbControl=new DbControl();
+        String Uname=name.getText().toString();
+        String Upass=pass.getText().toString();
+        if(dbControl.check(Uname,Upass)){
+            AnchorPane pnlOne = FXMLLoader.load(this.getClass().getResource("/sample/Home.fxml"));
+            pane.getChildren().setAll(pnlOne);
+        }
+        else {
+            lbl.setText("Wrong username or password! Try again!");
+            lbl.setTextFill(Color.web("#ff0000", 0.8));
+        }
+
 
     }
 
