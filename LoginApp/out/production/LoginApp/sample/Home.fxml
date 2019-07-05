@@ -26,11 +26,6 @@
                 <Font name="Bodoni MT" size="17.0" />
             </font>
         </Label>
-        <Label alignment="CENTER" layoutX="179.0" layoutY="79.0" prefHeight="22.0" prefWidth="125.0" text="Name" textAlignment="CENTER" textFill="#299be8">
-            <font>
-                <Font name="Bodoni MT Black" size="18.0" />
-            </font>
-        </Label>
         <ImageView fx:id="image" fitHeight="23.0" fitWidth="53.0" layoutX="14.0" layoutY="14.0" onMouseClicked="#SignOut" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@../resources/backMatter.png" />
@@ -57,6 +52,11 @@
                 <Font name="Book Antiqua" size="13.0" />
             </font>
         </Label>
+      <Label alignment="CENTER" layoutX="-1.0" layoutY="220.0" prefHeight="17.0" prefWidth="486.0" text="Check out the documentation at https://github.com/ScorchingShade/JavaFxLocker" textFill="#002451">
+         <font>
+            <Font name="Freestyle Script" size="21.0" />
+         </font>
+      </Label>
     </children>
     <padding>
         <Insets top="4.0" />

@@ -56,6 +56,7 @@ public class Home {
     private ImageView image;
     @FXML
     private javafx.scene.control.Button browse, decrypt;
+    @FXML
     private javafx.scene.control.Button encrypt;
 
     @FXML
@@ -285,6 +286,7 @@ public class Home {
                 info1.setText("Decrypted");
                 file=new File(source+".zip");
                 z=c1.deleteDirectory(file);
+                bro.setText("");
 
             }
              catch (ZipException e) {

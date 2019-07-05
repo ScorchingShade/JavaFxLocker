@@ -3,6 +3,7 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -29,7 +30,7 @@ public class Controller {
     private javafx.scene.control.Button registerButton;
 
     @FXML
-    private javafx.scene.layout.AnchorPane pane;
+    private javafx.scene.layout.AnchorPane pane1;
 
     @FXML
     public javafx.scene.control.PasswordField pass;
@@ -39,6 +40,10 @@ public class Controller {
 
     @FXML
     public javafx.scene.control.Label lbl;
+
+    @FXML
+    public javafx.scene.control.Label oracle;
+
 
 
 
@@ -75,17 +80,18 @@ public class Controller {
     }
 
     @FXML
-   private void loginButtonAction(ActionEvent event) throws IOException, SQLException {
+   private void loginButtonAction(ActionEvent event) throws IOException, SQLException,ClassNotFoundException {
         DbControl dbControl=new DbControl();
         String Uname=name.getText().toString();
         String Upass=pass.getText().toString();
+
         if(dbControl.check(Uname,Upass)){
             AnchorPane pnlOne = FXMLLoader.load(this.getClass().getResource("/sample/Home.fxml"));
-            pane.getChildren().setAll(pnlOne);
+            pane1.getChildren().setAll(pnlOne);
         }
         else {
-            lbl.setText("Wrong username or password! Try again!");
-            lbl.setTextFill(Color.web("#ff0000", 0.8));
+          lbl.setText("Sorry invalid credentials!");
+          lbl.setTextFill(Color.RED);
         }
 
 
@@ -94,8 +100,17 @@ public class Controller {
     @FXML
     private void registerButtonAction(ActionEvent event) throws IOException{
         GridPane pnlOne = FXMLLoader.load(this.getClass().getResource("/sample/register.fxml"));
-        pane.getChildren().setAll(pnlOne);
+        pane1.getChildren().setAll(pnlOne);
 
     }
+
+
+    @FXML void moveToOracle()throws IOException{
+        GridPane pn1OPane = FXMLLoader.load(this.getClass().getResource("/sample/Db_intial.fxml"));
+        Scene scene =new Scene(pn1OPane);
+
+        pane1.getChildren().setAll(pn1OPane);
+    }
+
 
 }
